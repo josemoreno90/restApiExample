@@ -1,25 +1,20 @@
-'use strict';
+"use strict";
 
-var express = require('express');
+var express = require("express");
 var app = express();
-var jsonParser = require('body-parser').json;
+var routes = require("./routes");
 
-var jsonCheck = function(req, res, next) {
-  if(req.body) {
-    console.log("the sky is", req.body.color)
-  } else {
-    console.log("There is no body property on the request");
-  };
-  next();
-}
 
-app.use(jsonCheck);
+var jsonParser = require("body-parser").json;
+var logger = require("morgan");
+
+app.use(logger("dev"));
 app.use(jsonParser());
-app.use(jsonCheck);
 
+app.use("/questions", routes);
 
 var port = process.env.PORT || 3000;
 
 app.listen(port, function() {
-  console.log('express is listening', port);
+  console.log("express is listening", port);
 });
