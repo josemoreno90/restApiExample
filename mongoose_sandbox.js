@@ -17,11 +17,11 @@ db.once("open", function() {
 
   var Schema =  mongoose.Schema;
   var AnimalSchema = new Schema({
-    type: String,
-    size: String,
-    color: String,
-    mass: Number,
-    name: String
+    type: {type: String, default: "goldfish"},
+    size: {type: String, default: "small"},
+    color: {type: String, default: "golden"},
+    mass: {type: Number, default: 0.007},
+    name: {type: String, default: "Angela"}
   });
 
   var Animal = mongoose.model("Animal", AnimalSchema);
@@ -34,12 +34,32 @@ db.once("open", function() {
     name: "Lawrence"
   })
 
-  elephant.save(function(err) {
-    if(err) console.error("Save Failed", err);
-    else console.log("Saved!");
-    db.close(function() {
-      console.log("db connection closesd");
-    });
-  })
+  var animal = new Animal({});  // Goldfish
 
-})
+  var whale = new Animal({
+    type: "whale",
+    size: "big",
+    mass: 190500,
+    name: "fig"
+  })
+  Animal.remove({}, function(err ) {
+    if (err) console.error(err);
+    elephant.save(function(err) {
+      if(err) console.error("Save Failed", err);
+      animal.save(function(err) {
+        if(err) console.error("Save Failed", err);
+        whale.save(function(err) {
+          if (err) console.error(err);
+          Animal.find({size: "big"}, function(err, animals) {
+            animals.forEach(function(animal) {
+              console.log(animal.name + " the " + animal.color + " " + animal.type);
+            })
+            db.close(function() {
+              console.log("db connection closesd");
+            });
+          });
+        })
+      });
+    });
+  });
+});
